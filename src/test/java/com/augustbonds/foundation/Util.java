@@ -2,7 +2,7 @@ package com.augustbonds.foundation;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class Util {
+class Util {
     static void expect(Runnable throwsException, Exception exceptionClass){
         try {
             throwsException.run();
