@@ -1,10 +1,11 @@
 package com.augustbonds.foundation;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class Array<E> {
+public class Array<E> implements Iterable<E> {
     private Object[] contents;
     private int size;
     private int preallocatedSize;
@@ -62,12 +63,6 @@ public class Array<E> {
         return new Array<>(result, size);
     }
 
-    public void forEach(Consumer<E> consumer) {
-        for (int i = 0; i < size; i++) {
-            consumer.accept((E) contents[i]);
-        }
-    }
-
     public E get(int index) {
         checkIndex(index);
         return (E) contents[index];
@@ -81,6 +76,36 @@ public class Array<E> {
     private void checkIndex(int index) {
         if (index < 0 || index >= size) {
             throw new OutOfBoundsException();
+        }
+    }
+
+    @Override
+    public Iterator<E> iterator() {
+        return new ArrayIterator();
+    }
+
+    @Override
+    public void forEach(Consumer<? super E> action) {
+        for (int i = 0; i < size; i++) {
+            action.accept((E) contents[i]);
+        }
+    }
+
+    private class ArrayIterator implements Iterator<E> {
+
+        int index = 0;
+
+        @Override
+        public boolean hasNext() {
+            return index < size();
+        }
+
+        @Override
+        public E next() {
+            if (!hasNext()) {
+                throw new OutOfBoundsException("Called next() on empty iterator.");
+            }
+            return get(index++);
         }
     }
 }
