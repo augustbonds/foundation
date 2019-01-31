@@ -2,7 +2,6 @@ package com.augustbonds.foundation;
 
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.function.Consumer;
 
 public class Set<E> implements Iterable<E> {
 
@@ -27,13 +26,6 @@ public class Set<E> implements Iterable<E> {
     @Override
     public Iterator<E> iterator() {
         return new SetIterator();
-    }
-
-    @Override
-    public void forEach(Consumer<? super E> action) {
-        for (Object o : contents) {
-            action.accept((E) o);
-        }
     }
 
     private class SetIterator implements Iterator<E> {

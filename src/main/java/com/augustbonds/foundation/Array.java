@@ -2,7 +2,6 @@ package com.augustbonds.foundation;
 
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class Array<E> implements Iterable<E> {
@@ -82,13 +81,6 @@ public class Array<E> implements Iterable<E> {
     @Override
     public Iterator<E> iterator() {
         return new ArrayIterator();
-    }
-
-    @Override
-    public void forEach(Consumer<? super E> action) {
-        for (int i = 0; i < size; i++) {
-            action.accept((E) contents[i]);
-        }
     }
 
     private class ArrayIterator implements Iterator<E> {

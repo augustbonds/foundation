@@ -36,6 +36,22 @@ public class ArrayTest {
     }
 
     @Test
+    public void testRemove(){
+        Array<Integer> array = new Array<>();
+        array.append(0);
+        array.append(0);
+        array.append(0);
+
+        array.remove(0);
+        array.remove(0);
+        array.remove(0);
+
+        assertThrows(OutOfBoundsException.class, () -> array.get(0));
+
+        assertEquals(0, array.size());
+    }
+
+    @Test
     public void testSet() {
         Array<Integer> array = new Array<>();
 
