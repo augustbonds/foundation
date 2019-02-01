@@ -184,4 +184,19 @@ public class ArrayTest {
         assertThrows(OutOfBoundsException.class, iteratorOf1000::next);
 
     }
+
+    @Test
+    public void testListWrapper(){
+        Array<Integer> array = new Array<>();
+        array.append(3);
+        array.append(2);
+        array.append(1);
+        Array<Integer>.Wrapper integers = array.new Wrapper(array.contents);
+
+        assertNotSame(array.contents, integers.toArray());
+        assertEquals(1, integers.toArray()[2]);
+
+        Integer[] integers1 = integers.toArray(new Integer[0]);
+        assertSame(array.contents[0].getClass(), integers1[0].getClass());
+    }
 }
