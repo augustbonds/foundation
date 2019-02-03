@@ -50,6 +50,7 @@ public class Array<E> implements Iterable<E> {
         System.arraycopy(contents, index + 1, newContents, index, size - 1 - index);
         contents = newContents;
         size--;
+        preallocatedSize = size;
     }
 
 
@@ -82,8 +83,9 @@ public class Array<E> implements Iterable<E> {
     }
 
     private void grow() {
-        int newSize = (int) (size + 10 + size * 0.1);
+        int newSize = (size * 2 + 10);
         contents = Arrays.copyOf(contents, newSize);
+        preallocatedSize = newSize;
     }
 
     private void checkIndex(int index) {

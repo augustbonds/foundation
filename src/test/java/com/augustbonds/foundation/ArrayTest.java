@@ -199,4 +199,30 @@ public class ArrayTest {
         Integer[] integers1 = integers.toArray(new Integer[0]);
         assertSame(array.contents[0].getClass(), integers1[0].getClass());
     }
+
+    @Test
+    public void testGrowing(){
+        Array<Integer> array = new Array<>();
+        assertEquals(10, array.contents.length);
+
+        for (int i = 0 ; i < 10 ;i++){
+            array.append(0);
+        }
+
+        assertEquals(28, array.contents.length);
+
+        array.remove(9);
+        assertEquals(9, array.contents.length);
+
+        array.append(0);
+        assertEquals(28, array.contents.length);
+
+
+        for (int i = 5 ; i < 10; i++){
+            array.append(0);
+        }
+
+        assertEquals(15, array.size());
+        assertEquals(28, array.contents.length);
+    }
 }
