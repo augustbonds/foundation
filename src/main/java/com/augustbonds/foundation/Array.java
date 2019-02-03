@@ -79,7 +79,7 @@ public class Array<E> implements Iterable<E> {
     }
 
     public void sort(Comparator<E> comparator){
-        new Wrapper(contents).sort(comparator);
+        new Wrapper().sort(comparator);
     }
 
     private void grow() {
@@ -94,18 +94,53 @@ public class Array<E> implements Iterable<E> {
         }
     }
 
+    private void insert(E element, int index){
+        Object[] newContents = Arrays.copyOf(contents, size + 1);
+        newContents[index] = element;
+        System.arraycopy(contents, index, newContents, index + 1, size + 1 - index);
+        contents = newContents;
+        size++;
+        preallocatedSize = size;
+    }
+
+    private void clear(){
+        size = 0;
+        contents = new Object[10];
+        preallocatedSize = 10;
+    }
+
     @Override
     public Iterator<E> iterator() {
         return new ArrayIterator();
     }
 
-    private class ArrayIterator implements Iterator<E> {
+    private class ArrayIterator implements ListIterator<E> {
 
-        int index = 0;
+        final int startIndex;
+        int index;
+        int size;
+
+        private ArrayIterator(){
+            startIndex = 0;
+            index = 0;
+            size = size();
+        }
+
+        private ArrayIterator(int index){
+            startIndex = 0;
+            this.index = index;
+            size = size();
+        }
+
+        private ArrayIterator(int fromIndex, int toIndex){
+            startIndex = fromIndex;
+            index = startIndex;
+            size = toIndex - startIndex;
+        }
 
         @Override
         public boolean hasNext() {
-            return index < size();
+            return index < startIndex + size;
         }
 
         @Override
@@ -115,13 +150,68 @@ public class Array<E> implements Iterable<E> {
             }
             return get(index++);
         }
+
+        @Override
+        public boolean hasPrevious() {
+            return index > startIndex;
+        }
+
+        @Override
+        public E previous() {
+            if (!hasPrevious()){
+                throw new OutOfBoundsException("Called previous() on empty iterator.");
+            }
+            return get(--index);
+        }
+
+        @Override
+        public int nextIndex() {
+            return index;
+        }
+
+        @Override
+        public int previousIndex() {
+            return index - 1;
+        }
+
+        @Override
+        public void remove() {
+            checkIndex(index);
+            Array.this.remove(index);
+            size--;
+        }
+
+        @Override
+        public void set(E e) {
+            checkIndex(index - 1);
+            Array.this.set(index - 1, e);
+        }
+
+        @Override
+        public void add(E e) {
+            Array.this.insert(e, startIndex + size);
+            size++;
+        }
+
+        private void checkIndex(int index) {
+            if (index < startIndex || index >= startIndex + size) {
+                throw new OutOfBoundsException();
+            }
+        }
     }
 
     class Wrapper implements List<E> {
 
-        private Object[] contents;
-        Wrapper(Object[] contents){
-            this.contents = contents;
+        private final int startIndex;
+        private int size;
+
+        Wrapper() {
+            startIndex = 0;
+            size = Array.this.size();
+        }
+        Wrapper(int fromIndex, int toIndex){
+            startIndex = fromIndex;
+            this.size = toIndex - startIndex;
         }
 
         @Override
@@ -154,41 +244,41 @@ public class Array<E> implements Iterable<E> {
 
         @Override
         public Iterator<E> iterator() {
-            return iterator();
+            return new ArrayIterator(startIndex, startIndex + size);
         }
 
         @Override
         public Object[] toArray() {
-            return Arrays.copyOf(contents, size);
+            Object[] newArray = new Object[size];
+            System.arraycopy(contents, startIndex, newArray, 0, size);
+            return newArray;
         }
 
         @Override
         public <T> T[] toArray(T[] a) {
-            return (T[]) Arrays.copyOf(contents, size, a.getClass());
+            return (T[]) Arrays.copyOfRange(contents, startIndex, startIndex + size, a.getClass());
         }
 
         @Override
         public boolean add(E e) {
-            append(e);
-            contents = Array.this.contents;
+            Array.this.insert(e, startIndex + size);
+            size++;
             return true;
         }
 
         @Override
         public boolean remove(Object o) {
             if (o == null) {
-                for (int i = 0 ; i < size ; i++){
+                for (int i = startIndex ; i < startIndex + size ; i++){
                     if (contents[i] == null){
                         Array.this.remove(i);
-                        contents = Array.this.contents;
                         return true;
                     }
                 }
             } else {
-                for (int i = 0 ; i < size ; i++){
+                for (int i = startIndex ; i < startIndex + size ; i++){
                     if(o.equals(contents[i])){
                         Array.this.remove(i);
-                        contents = Array.this.contents;
                         return true;
                     }
                 }
@@ -223,52 +313,83 @@ public class Array<E> implements Iterable<E> {
 
         @Override
         public void clear() {
-
+            Array.this.clear();
         }
 
         @Override
         public E get(int index) {
-            return null;
+            return Array.this.get(startIndex + index);
         }
 
         @Override
         public E set(int index, E element) {
-            return null;
+            Array.this.set(startIndex + index, element);
+            return element;
         }
 
         @Override
         public void add(int index, E element) {
-
+            Array.this.insert(element, startIndex + index);
         }
 
         @Override
         public E remove(int index) {
-            return null;
+            E element = Array.this.get(startIndex + index);
+            Array.this.remove(index);
+            return element;
         }
 
         @Override
         public int indexOf(Object o) {
-            return 0;
+            if (o == null){
+                for (int i = startIndex; i < startIndex + size ; i++){
+                    if (contents[i] == null){
+                        return i;
+                    }
+                }
+            } else {
+                for (int i = startIndex; i < startIndex + size ; i++){
+                    if (o.equals(contents[i])){
+                        return i;
+                    }
+                }
+            }
+
+            return -1;
         }
 
         @Override
         public int lastIndexOf(Object o) {
-            return 0;
+            if (o == null){
+                for (int i = startIndex + size - 1; i >= startIndex ; i--){
+                    if (contents[i] == null){
+                        return i;
+                    }
+                }
+            } else {
+                for (int i = startIndex + size - 1; i >= startIndex ; i--){
+                    if (o.equals(contents[i])){
+                        return i;
+                    }
+                }
+            }
+
+            return -1;
         }
 
         @Override
         public ListIterator<E> listIterator() {
-            return null;
+            return new ArrayIterator();
         }
 
         @Override
         public ListIterator<E> listIterator(int index) {
-            return null;
+            return new ArrayIterator(startIndex + index);
         }
 
         @Override
         public List<E> subList(int fromIndex, int toIndex) {
-            return null;
+            return new Wrapper(startIndex + fromIndex, startIndex + toIndex);
         }
     }
 }

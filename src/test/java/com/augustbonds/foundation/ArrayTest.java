@@ -2,6 +2,7 @@ package com.augustbonds.foundation;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Random;
 
@@ -186,12 +187,34 @@ public class ArrayTest {
     }
 
     @Test
+    public void testSort(){
+        Array<Integer> array = new Array<>();
+
+        array.append(3);
+        array.append(1);
+        array.append(5);
+        array.append(-1);
+        array.append(2);
+
+        array.sort(Comparator.naturalOrder());
+
+        assertEquals(5, array.size());
+
+        assertEquals(-1, (int) array.get(0));
+        assertEquals(1, (int) array.get(1));
+        assertEquals(2, (int) array.get(2));
+        assertEquals(3, (int) array.get(3));
+        assertEquals(5, (int) array.get(4));
+
+    }
+
+    @Test
     public void testListWrapper(){
         Array<Integer> array = new Array<>();
         array.append(3);
         array.append(2);
         array.append(1);
-        Array<Integer>.Wrapper integers = array.new Wrapper(array.contents);
+        Array<Integer>.Wrapper integers = array.new Wrapper();
 
         assertNotSame(array.contents, integers.toArray());
         assertEquals(1, integers.toArray()[2]);
