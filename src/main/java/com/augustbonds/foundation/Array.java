@@ -4,11 +4,19 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+/**
+ * The Array class is the default ordered collection.
+ * It is backed by an array, and grows to fit it's contents dynamically.
+ * @param <E> The type of objects stored in this Array
+ */
 public class Array<E> implements Iterable<E> {
     Object[] contents;
     private int size;
     private int preallocatedSize;
 
+    /**
+     * Default constructor.
+     */
     public Array() {
         size = 0;
         preallocatedSize = 10;
@@ -21,11 +29,18 @@ public class Array<E> implements Iterable<E> {
         this.size = size;
     }
 
+    /**
+     * Returns the size of the Array.
+     * @return the size of the Array.
+     */
     public int size() {
         return size;
     }
 
-
+    /**
+     * Appends an element to the end of the Array.
+     * @param element The element to append.
+     */
     public void append(E element) {
         if (size > preallocatedSize * 0.8) {
             grow();
@@ -35,11 +50,22 @@ public class Array<E> implements Iterable<E> {
         size++;
     }
 
+    /**
+     * Sets the element at a specific index.
+     * The index must be within [0,size()), or else a {@code OutOfBoundsException} will be thrown.
+     * @param index The target index.
+     * @param element The element to be set.
+     */
     public void set(int index, E element) {
         checkIndex(index);
         contents[index] = element;
     }
 
+    /**
+     * Removes an element at a specific index and shrinks the Array.
+     * The index must be within [0,size()), or else a {@code OutOfBoundsException} will be thrown.
+     * @param index The index of the element to remove.
+     */
     public void remove(int index) {
         checkIndex(index);
         if (size == 1) {
@@ -53,7 +79,12 @@ public class Array<E> implements Iterable<E> {
         preallocatedSize = size;
     }
 
-
+    /**
+     * Apply a function to each element of the Array, and return an Array of the returned elements.
+     * @param toMap The function to apply to objects stored in the Array.
+     * @param <O> The type of the objects stored in the returned Array.
+     * @return An Array of elements as the result of applying toMap to every element in the Array.
+     */
     public <O> Array<O> map(Function<E, O> toMap) {
         Object[] result = new Object[size];
         for (int i = 0; i < size; i++) {
@@ -63,11 +94,21 @@ public class Array<E> implements Iterable<E> {
         return new Array<>(result, size);
     }
 
+    /**
+     * Get the element at a specific index.
+     * @param index The index of the requested element.
+     * @return
+     */
     public E get(int index) {
         checkIndex(index);
         return (E) contents[index];
     }
 
+    /**
+     * Filter this Array by a given Predicate.
+     * @param predicate The predicate on which to filter this Array.
+     * @return An Array consisting of the objects in this Array satisfying the predicate.
+     */
     public Array<E> filter(Predicate<E> predicate){
         Array<E> filtered = new Array<>();
         for (int i = 0 ; i < size ; i++){
@@ -78,8 +119,21 @@ public class Array<E> implements Iterable<E> {
         return filtered;
     }
 
+    /**
+     * Perform an in-place sorting of the elements in the Array.
+     * @param comparator The comparator on which to base the ordering.
+     */
     public void sort(Comparator<E> comparator){
         new Wrapper().sort(comparator);
+    }
+
+    /**
+     * Return an iterator for this Array.
+     * @return An iterator for this Array.
+     */
+    @Override
+    public Iterator<E> iterator() {
+        return new ArrayIterator();
     }
 
     private void grow() {
@@ -107,11 +161,6 @@ public class Array<E> implements Iterable<E> {
         size = 0;
         contents = new Object[10];
         preallocatedSize = 10;
-    }
-
-    @Override
-    public Iterator<E> iterator() {
-        return new ArrayIterator();
     }
 
     private class ArrayIterator implements ListIterator<E> {
@@ -202,6 +251,7 @@ public class Array<E> implements Iterable<E> {
 
     class Wrapper implements List<E> {
 
+        private Wrapper subListParent;
         private final int startIndex;
         private int size;
 
@@ -212,6 +262,11 @@ public class Array<E> implements Iterable<E> {
         Wrapper(int fromIndex, int toIndex){
             startIndex = fromIndex;
             this.size = toIndex - startIndex;
+        }
+
+        private Wrapper(int fromIndex, int toIndex, Wrapper parent){
+            this(fromIndex, toIndex);
+            subListParent = parent;
         }
 
         @Override
@@ -227,13 +282,13 @@ public class Array<E> implements Iterable<E> {
         @Override
         public boolean contains(Object o) {
             if (o == null){
-                for (int i = 0 ; i < size ; i++){
+                for (int i = startIndex ; i < startIndex + size ; i++){
                     if (contents[i] == null){
                         return true;
                     }
                 }
             } else {
-                for (int i = 0; i < size; i++) {
+                for (int i = startIndex; i < startIndex + size; i++) {
                     if (o.equals(contents[i])){
                         return true;
                     }
@@ -262,7 +317,7 @@ public class Array<E> implements Iterable<E> {
         @Override
         public boolean add(E e) {
             Array.this.insert(e, startIndex + size);
-            size++;
+            incrementSize();
             return true;
         }
 
@@ -272,6 +327,7 @@ public class Array<E> implements Iterable<E> {
                 for (int i = startIndex ; i < startIndex + size ; i++){
                     if (contents[i] == null){
                         Array.this.remove(i);
+                        decrementSize();
                         return true;
                     }
                 }
@@ -279,6 +335,7 @@ public class Array<E> implements Iterable<E> {
                 for (int i = startIndex ; i < startIndex + size ; i++){
                     if(o.equals(contents[i])){
                         Array.this.remove(i);
+                        decrementSize();
                         return true;
                     }
                 }
@@ -330,12 +387,14 @@ public class Array<E> implements Iterable<E> {
         @Override
         public void add(int index, E element) {
             Array.this.insert(element, startIndex + index);
+            incrementSize();
         }
 
         @Override
         public E remove(int index) {
             E element = Array.this.get(startIndex + index);
             Array.this.remove(index);
+            decrementSize();
             return element;
         }
 
@@ -389,7 +448,27 @@ public class Array<E> implements Iterable<E> {
 
         @Override
         public List<E> subList(int fromIndex, int toIndex) {
-            return new Wrapper(startIndex + fromIndex, startIndex + toIndex);
+            return new Wrapper(startIndex + fromIndex, startIndex + toIndex, this);
         }
+
+        private void decrementSize(){
+            size--;
+            if (subListParent == null) {
+                Array.this.size--;
+            } else {
+                subListParent.decrementSize();
+            }
+        }
+
+        private void incrementSize(){
+            size++;
+            if (subListParent == null) {
+                Array.this.size++;
+            } else {
+                subListParent.incrementSize();
+            }
+        }
+
+
     }
 }
