@@ -39,7 +39,7 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Entry<K, V>> {
     }
 
     private class DictionaryIterator implements Iterator<Entry<K, V>> {
-        private Iterator<Map.Entry<K, V>> iterator = contents.entrySet().iterator();
+        private final Iterator<Map.Entry<K, V>> iterator = contents.entrySet().iterator();
 
         @Override
         public boolean hasNext() {

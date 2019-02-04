@@ -97,7 +97,7 @@ public class Array<E> implements Iterable<E> {
     /**
      * Get the element at a specific index.
      * @param index The index of the requested element.
-     * @return
+     * @return The element, if it exists. Null otherwise.
      */
     public E get(int index) {
         checkIndex(index);

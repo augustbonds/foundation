@@ -30,7 +30,7 @@ public class Set<E> implements Iterable<E> {
 
     private class SetIterator implements Iterator<E> {
 
-        Iterator<E> iterator = contents.iterator();
+        final Iterator<E> iterator = contents.iterator();
 
         @Override
         public boolean hasNext() {
