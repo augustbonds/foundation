@@ -98,4 +98,22 @@ public class SetTest {
 
         assertThrows(OutOfBoundsException.class, iterator::next);
     }
+
+    @Test
+    public void testContains(){
+        Set<Integer> set = new Set<>();
+        for (int i = 0; i < 1000; i++){
+            set.add(i);
+        }
+
+        boolean containedAll = true;
+        for (int i = 999; i >= 0; i--){
+            if (!set.contains(i)){
+                containedAll = false;
+                break;
+            }
+        }
+        assertTrue(containedAll);
+        assertFalse(set.contains(-1));
+    }
 }

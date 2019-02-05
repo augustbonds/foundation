@@ -248,4 +248,20 @@ public class ArrayTest {
         assertEquals(15, array.size());
         assertEquals(28, array.contents.length);
     }
+
+    @Test
+    public void testFiltering(){
+        Array<Integer> array = new Array<>();
+        array.append(0);
+        array.append(-1);
+        array.append(Integer.MAX_VALUE);
+        array.append(Integer.MIN_VALUE);
+        array.append(100);
+        array.append(100);
+        array.append(0);
+
+        assertEquals(3, array.filter(x -> x > 0).size());
+        assertEquals(1, array.filter(x -> x < -100).size());
+        assertEquals(4, array.filter(x -> x <= 0).size());
+    }
 }
