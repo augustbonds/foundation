@@ -6,7 +6,7 @@
 
     <groupId>com.augustbonds</groupId>
     <artifactId>foundation</artifactId>
-    <version>0.3.0-SNAPSHOT</version>
+    <version>0.3.0</version>
 
     <name>Foundation</name>
     <description>A Swift-inspired Java standard library.</description>
