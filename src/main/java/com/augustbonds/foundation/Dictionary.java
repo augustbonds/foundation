@@ -21,7 +21,7 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Entry<K, V>> {
     }
 
     /**
-     * Get the value corresponding the given key.
+     * Get the value corresponding to the given key.
      * @param key The key
      * @return A value, or null.
      */
@@ -30,7 +30,8 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Entry<K, V>> {
     }
 
     /**
-     * Store a value and a corresponding key.
+     * Store a value corresponding to a key.
+     * If the key already has an associated value, that value will be replaced.
      * @param key A key
      * @param value A value
      */
@@ -55,7 +56,16 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Entry<K, V>> {
     }
 
     /**
-     * Iterate over the key-value pairs stored in the dictionary.
+     * Returns a Map backed by this Dictionary.
+     * Used for interacting with Java libraries outside foundation.
+     * @return a Map backed by this Dictionary.
+     */
+    public Map<K, V> map(){
+        return contents;
+    }
+
+    /**
+     * An Iterator over the key-value pairs stored in the dictionary.
      * @return An Iterator over this dictionary
      */
     @Override

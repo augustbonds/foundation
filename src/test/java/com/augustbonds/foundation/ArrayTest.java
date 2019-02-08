@@ -56,7 +56,7 @@ public class ArrayTest {
     public void testSet() {
         Array<Integer> array = new Array<>();
 
-        Util.expect(() -> array.set(0, 10), new OutOfBoundsException());
+        assertThrows(OutOfBoundsException.class, () -> array.set(0, 10));
 
         array.append(1);
         assertEquals(1, (int) array.get(0));
@@ -91,13 +91,13 @@ public class ArrayTest {
     @Test
     public void testOutOfBounds() {
         final Array<Integer> array = new Array<>();
-        Util.expect(() -> array.get(0), new OutOfBoundsException());
+        assertThrows(OutOfBoundsException.class, () -> array.get(0));
     }
 
     @Test
     public void testRemoveOutOfBounds() {
         final Array<Integer> array = new Array<>();
-        Util.expect(() -> array.remove(0), new OutOfBoundsException());
+        assertThrows(OutOfBoundsException.class, () -> array.remove(0));
     }
 
     @Test

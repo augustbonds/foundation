@@ -136,6 +136,15 @@ public class Array<E> implements Iterable<E> {
         return new ArrayIterator();
     }
 
+    /**
+     * Return a List backed by this Array.
+     * Used for interacting with Java libraries outside of foundation.
+     * @return a List backed by this Array.
+     */
+    public List<E> list() {
+        return new Wrapper();
+    }
+
     private void grow() {
         int newSize = (size * 2 + 10);
         contents = Arrays.copyOf(contents, newSize);
