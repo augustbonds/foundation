@@ -2,8 +2,8 @@ package com.augustbonds.foundation;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Comparator;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -37,7 +37,7 @@ public class ArrayTest {
     }
 
     @Test
-    public void testRemove(){
+    public void testRemove() {
         Array<Integer> array = new Array<>();
         array.append(0);
         array.append(0);
@@ -164,7 +164,7 @@ public class ArrayTest {
     @Test
     public void testIteratorException() {
         Iterator<Integer> empty = new Array<Integer>().iterator();
-        assertThrows(OutOfBoundsException.class, empty::next);
+        assertThrows(NoSuchElementException.class, empty::next);
 
         Array<Integer> arrayOf2 = new Array<>();
         arrayOf2.append(1);
@@ -172,7 +172,7 @@ public class ArrayTest {
         Iterator<Integer> iteratorOf2 = arrayOf2.iterator();
         iteratorOf2.next();
         iteratorOf2.next();
-        assertThrows(OutOfBoundsException.class, iteratorOf2::next);
+        assertThrows(NoSuchElementException.class, iteratorOf2::next);
 
         Array<Integer> arrayOf1000 = new Array<>();
         for (int i = 0; i < 1000; i++) {
@@ -182,53 +182,16 @@ public class ArrayTest {
         for (int i = 0; i < 1000; i++) {
             iteratorOf1000.next();
         }
-        assertThrows(OutOfBoundsException.class, iteratorOf1000::next);
+        assertThrows(NoSuchElementException.class, iteratorOf1000::next);
 
     }
 
     @Test
-    public void testSort(){
-        Array<Integer> array = new Array<>();
-
-        array.append(3);
-        array.append(1);
-        array.append(5);
-        array.append(-1);
-        array.append(2);
-
-        array.sort(Comparator.naturalOrder());
-
-        assertEquals(5, array.size());
-
-        assertEquals(-1, (int) array.get(0));
-        assertEquals(1, (int) array.get(1));
-        assertEquals(2, (int) array.get(2));
-        assertEquals(3, (int) array.get(3));
-        assertEquals(5, (int) array.get(4));
-
-    }
-
-    @Test
-    public void testListWrapper(){
-        Array<Integer> array = new Array<>();
-        array.append(3);
-        array.append(2);
-        array.append(1);
-        Array<Integer>.Wrapper integers = array.new Wrapper();
-
-        assertNotSame(array.contents, integers.toArray());
-        assertEquals(1, integers.toArray()[2]);
-
-        Integer[] integers1 = integers.toArray(new Integer[0]);
-        assertSame(array.contents[0].getClass(), integers1[0].getClass());
-    }
-
-    @Test
-    public void testGrowing(){
+    public void testGrowing() {
         Array<Integer> array = new Array<>();
         assertEquals(10, array.contents.length);
 
-        for (int i = 0 ; i < 10 ;i++){
+        for (int i = 0; i < 10; i++) {
             array.append(0);
         }
 
@@ -241,7 +204,7 @@ public class ArrayTest {
         assertEquals(28, array.contents.length);
 
 
-        for (int i = 5 ; i < 10; i++){
+        for (int i = 5; i < 10; i++) {
             array.append(0);
         }
 
@@ -250,7 +213,7 @@ public class ArrayTest {
     }
 
     @Test
-    public void testFiltering(){
+    public void testFiltering() {
         Array<Integer> array = new Array<>();
         array.append(0);
         array.append(-1);

@@ -6,6 +6,7 @@ import java.util.function.BiConsumer;
 /**
  * The Dictionary class acts as a lookup table for values of type V with keys of type K.
  * The type K must implement both hashCode() and a corresponding equals() method.
+ *
  * @param <K> The type of key in the Dictionary
  * @param <V> The type of the values stored in the Dictionary
  */
@@ -22,6 +23,7 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Entry<K, V>> {
 
     /**
      * Get the value corresponding to the given key.
+     *
      * @param key The key
      * @return A value, or null.
      */
@@ -32,7 +34,8 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Entry<K, V>> {
     /**
      * Store a value corresponding to a key.
      * If the key already has an associated value, that value will be replaced.
-     * @param key A key
+     *
+     * @param key   A key
      * @param value A value
      */
     public void put(K key, V value) {
@@ -41,6 +44,7 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Entry<K, V>> {
 
     /**
      * Perform an action on each key-value pair stored in the dictionary.
+     *
      * @param consumer The action to perform on each key-value pair in the dictionary.
      */
     public void forEach(BiConsumer<K, V> consumer) {
@@ -49,6 +53,7 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Entry<K, V>> {
 
     /**
      * The number key-value pairs stored in the dictionary
+     *
      * @return The number of key-value pairs in the dictionary
      */
     public int size() {
@@ -56,16 +61,8 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Entry<K, V>> {
     }
 
     /**
-     * Returns a Map backed by this Dictionary.
-     * Used for interacting with Java libraries outside foundation.
-     * @return a Map backed by this Dictionary.
-     */
-    public Map<K, V> map(){
-        return contents;
-    }
-
-    /**
      * An Iterator over the key-value pairs stored in the dictionary.
+     *
      * @return An Iterator over this dictionary
      */
     @Override
@@ -75,11 +72,13 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Entry<K, V>> {
 
     /**
      * The interface of key-value pairs accessed through the Dictionary Iterator.
+     *
      * @param <K> The type of key in the pair
      * @param <V> The type of value in the pair
      */
     public interface Entry<K, V> {
         K getKey();
+
         V getValue();
     }
 

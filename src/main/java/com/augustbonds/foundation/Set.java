@@ -54,15 +54,6 @@ public class Set<E> implements Iterable<E> {
     }
 
     /**
-     * Returns a Java Set backed by this Set.
-     * Used to interface with Java libraries outside foundation.
-     * @return a Java Set backed by this Set.
-     */
-    public java.util.Set<E> set(){
-        return contents;
-    }
-
-    /**
      * An iterator for the elements in the Set.
      */
     @Override
