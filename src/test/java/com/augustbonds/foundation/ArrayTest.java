@@ -227,4 +227,36 @@ public class ArrayTest {
         assertEquals(1, array.filter(x -> x < -100).size());
         assertEquals(4, array.filter(x -> x <= 0).size());
     }
+
+    @Test
+    public void testIteratorRemove() {
+        Array<Integer> array = new Array<>();
+        array.append(0);
+        array.append(-1);
+        array.append(Integer.MAX_VALUE);
+        array.append(Integer.MIN_VALUE);
+        array.append(100);
+        array.append(100);
+        array.append(0);
+
+        Iterator<Integer> it = array.iterator();
+        while (it.hasNext()){
+            int next = it.next();
+            if (next == -1){
+                it.remove();
+            }
+        }
+        assertEquals(6, array.size(), "Remove didn't succed in removing only the 1 indexed number");
+        assertEquals(0, (int) array.get(0), "Remove incorrectly removed first element");
+        assertEquals(Integer.MAX_VALUE, (int) array.get(1), "Remove incorrectly removed the third element");
+    }
+
+    @Test
+    public void iteratorOutOfBoundsTest(){
+        Array<Integer> array = new Array<>();
+        array.append(1234);
+        Iterator<Integer> it = array.iterator();
+        it.next();
+        assertThrows(NoSuchElementException.class, it::next);
+    }
 }

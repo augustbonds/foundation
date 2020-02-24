@@ -153,17 +153,15 @@ public class Array<E> implements Iterable<E> {
 
         final int startIndex;
         int index;
-        int size;
 
         private ArrayIterator() {
             startIndex = 0;
             index = 0;
-            size = size();
         }
 
         @Override
         public boolean hasNext() {
-            return index < startIndex + size;
+            return index < startIndex + size();
         }
 
         @Override
@@ -176,15 +174,7 @@ public class Array<E> implements Iterable<E> {
 
         @Override
         public void remove() {
-            checkIndex(index);
-            Array.this.remove(index);
-            size--;
-        }
-
-        private void checkIndex(int index) {
-            if (index < startIndex || index >= startIndex + size) {
-                throw new OutOfBoundsException();
-            }
+            Array.this.remove(index-1);
         }
     }
 }
