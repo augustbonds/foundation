@@ -39,3 +39,6 @@ jobs:
         
       # run tests!
       - run: mvn test -Pcircleci
+      - store_test_results:
+          path: test-results
+
