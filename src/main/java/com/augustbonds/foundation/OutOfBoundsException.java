@@ -5,8 +5,7 @@ package com.augustbonds.foundation;
  */
 class OutOfBoundsException extends RuntimeException {
 
-    OutOfBoundsException() {
-    }
+    OutOfBoundsException() {}
 
     OutOfBoundsException(String message) {
         super(message);
