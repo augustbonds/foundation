@@ -5,6 +5,7 @@
 ### Intellij ###
 
 .idea/
+*.iml
 
 # IntelliJ
 out/
